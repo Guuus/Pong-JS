@@ -31,7 +31,7 @@ h1 { margin: 15px 0; font-size: 3em; }
     background-color: #fff;
 }
 
-#player, #bot {
+#player1, #player2 {
     position: absolute;
     height: 250px;
     width: 40px;
@@ -41,8 +41,8 @@ h1 { margin: 15px 0; font-size: 3em; }
     border-radius: 5px;
 }
 
-#player { left: 25px; }
-#bot { right: 25px; }
+#player1 { left: 25px; }
+#player2 { right: 25px; }
 
 #ball {
     position: absolute;
