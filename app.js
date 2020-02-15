@@ -38,7 +38,7 @@ document.getElementById("scoreP2").textContent = scoreP2;
 function move() {
 
     // Move the ball in the good direction on the y axis
-    if (ballLeft > 1345 && ballLeft < 1353) {
+    if (ballLeft > 1365 && ballLeft < 1373) {
         dirLeft = "down";
         scoreP1++;
         document.getElementById("scoreP1").textContent = scoreP1;
@@ -57,7 +57,7 @@ function move() {
     }
 
     // Move the ball in the good direction on the x axis
-    if (ballTop > 645 && ballTop < 653) {
+    if (ballTop > 665 && ballTop < 673) {
         dirTop = "up";
     } else if (ballTop == 0) {
         dirTop = "down";
