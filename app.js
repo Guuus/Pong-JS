@@ -2,6 +2,7 @@ class Player {
     constructor(player) {
         this.player = document.getElementById(player);
         this.top = this.player.offsetTop;
+        this.score = 0;
     }
 
     move(keyCode) {
@@ -12,66 +13,67 @@ class Player {
             this.top += 36;
             this.player.style.top = (this.top) + "px";
         }
-        console.log(this.top);
     }
 
 }
 
+class Ball {
+    constructor() {
+        this.ball = document.getElementById("ball");
+        this.left = this.ball.offsetLeft;
+        this.top = this.ball.offsetTop;
+    }
+}
+
 const player1 = new Player("player1");
 const player2 = new Player("player2");
+const ball = new Ball();
 
 document.addEventListener('keydown', function (e) {
     player1.move(e.keyCode);
 });
 
 /* Moving the ball */
-var ball = document.getElementById("ball");
-var ballLeft = ball.offsetLeft;
-var ballTop = ball.offsetTop;
 var dirLeft = "up";
 var dirTop = "down";
 var animId = null;
-var scoreP1 = 0;
-var scoreP2 = 0;
-document.getElementById("scoreP2").textContent = scoreP2;
 
 function move() {
 
     // Move the ball in the good direction on the y axis
-    if (ballLeft > 1365 && ballLeft < 1373) {
+    if (ball.left > 1365 && ball.left < 1373) {
         dirLeft = "down";
-        scoreP1++;
-        document.getElementById("scoreP1").textContent = scoreP1;
-    } else if (ballLeft == 0) {
+        player1.score++;
+        document.getElementById("scoreP1").textContent = player1.score;
+    } else if (ball.left == 0) {
         dirLeft = "up";
-        scoreP2++;
-        document.getElementById("scoreP2").textContent = scoreP2;
-    } else if (ballLeft > 25 && ballLeft < 48 && ballTop >= (player1.top - 40) && ballTop <= (player1.top + 200)) {
+        player2.score++;
+        document.getElementById("scoreP2").textContent = player2.score;
+    } else if (ball.left > 25 && ball.left < 48 && ball.top >= (player1.top - 40) && ball.top <= (player1.top + 200)) {
         dirLeft = "up";
     }
     
     if (dirLeft == "up") {
-        ballLeft += 10;
+        ball.left += 10;
     } else if (dirLeft == "down") {
-        ballLeft -= 10;
+        ball.left -= 10;
     }
 
     // Move the ball in the good direction on the x axis
-    if (ballTop > 665 && ballTop < 673) {
+    if (ball.top > 665 && ball.top < 673) {
         dirTop = "up";
-    } else if (ballTop == 0) {
+    } else if (ball.top == 0) {
         dirTop = "down";
     }
 
     if (dirTop == "up") {
-        ballTop -= 10;
+        ball.top -= 10;
     } else if (dirTop == "down") {
-        ballTop += 10;
+        ball.top += 10;
     }
 
-    console.log(ballLeft)
-    ball.style.left = ballLeft + "px";
-    ball.style.top = ballTop + "px";
+    ball.ball.style.left = ball.left + "px";
+    ball.ball.style.top = ball.top + "px";
     animId = requestAnimationFrame(move);
 }
 
