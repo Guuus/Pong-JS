@@ -31,12 +31,24 @@ h1 { margin: 15px 0; font-size: 3em; }
     background-color: #fff;
 }
 
+.score {
+    display: flex;
+    position: relative;
+    top: 10px;
+
+    font-size: 4em;
+    font-weight: bold;
+}
+
+#scoreP1 { float: left; left: 590px; }
+#scoreP2 { float: right; right: 590px; }
+
 #player1, #player2 {
     position: absolute;
-    height: 250px;
-    width: 40px;
+    height: 200px;
+    width: 30px;
     background-color: #fff;
-    top: 225px;
+    top: 250px;
 
     border-radius: 5px;
 }
@@ -46,8 +58,8 @@ h1 { margin: 15px 0; font-size: 3em; }
 
 #ball {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     background-color: #fff;
     top: 0; left: 0;
 
