@@ -11,57 +11,6 @@ body,h1,h2,h3,h4,h5,h6,p,a {
 body { background-color: #58d68d; font-size: 20px; }
 h1 { margin: 15px 0; font-size: 3em; }
 
-#container {
-    position: relative;
-    margin: 0 auto;
-    width: 1400px;
-    height: 700px;
+#canvas {
     background-color: #000;
-
-    border: 5px solid #fff;
-    border-radius: 10px;
-
-    box-shadow: 2px 2px 10px #000;
-}
-
-#container .line {
-    margin: 0 auto;
-    width: 10px;
-    height: 700px;
-    background-color: #fff;
-}
-
-.score {
-    display: flex;
-    position: relative;
-    top: 10px;
-
-    font-size: 4em;
-    font-weight: bold;
-}
-
-#scoreP1 { float: left; left: 590px; }
-#scoreP2 { float: right; right: 590px; }
-
-#player1, #player2 {
-    position: absolute;
-    height: 200px;
-    width: 30px;
-    background-color: #fff;
-    top: 250px;
-
-    border-radius: 5px;
-}
-
-#player1 { left: 25px; }
-#player2 { right: 25px; }
-
-#ball {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-color: #fff;
-    top: 0; left: 0;
-
-    border-radius: 50%;
 }

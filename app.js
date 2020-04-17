@@ -1,81 +1,108 @@
+var canvas = document.getElementById('canvas');
+var canvasPos = canvas.getBoundingClientRect();
+var ctx = canvas.getContext('2d');
+ctx.fillStyle = "#fff";
+
+// Init the Player
 class Player {
-    constructor(player) {
-        this.player = document.getElementById(player);
-        this.top = this.player.offsetTop;
-        this.score = 0;
+    constructor(x,y) {
+        this.x = x;
+        this.y = y;
+        this.width = 40;
+        this.height = 250;
     }
 
-    move(keyCode) {
-        if (keyCode == 38 && this.top > 0) {
-            this.top -= 36;
-            this.player.style.top = (this.top) + "px";
-        } else if (keyCode == 40 && this.top < 500) {
-            this.top += 36;
-            this.player.style.top = (this.top) + "px";
+    draw() {
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+    }
+
+    move(e) {
+        let mouseY = e.clientY - canvasPos.top;
+        if (mouseY < player1.height/2) {
+            player1.y = 0;
+        } else if (mouseY > canvas.height-player1.height/2) {
+            player1.y = canvas.height-player1.height;
+        } else {
+            player1.y = mouseY - player1.height/2;
         }
     }
-
 }
 
-class Ball {
-    constructor() {
-        this.ball = document.getElementById("ball");
-        this.left = this.ball.offsetLeft;
-        this.top = this.ball.offsetTop;
+const player1 = new Player(30,canvas.height/2-250/2);
+const player2 = new Player(canvas.width-70,canvas.height/2-250/2);
+
+// Init the Ball
+var Ball = {
+    x: 50,
+    y: 50,
+    rad: 25,
+    horizontal: "increase",
+    vertical: "increase",
+    speedX: 4,
+    speedY: 4,
+
+    draw: function() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.rad, 0, 2*Math.PI);
+        ctx.closePath();
+        ctx.fill();
+    },
+
+    move: function() {
+        // Choose the direction of the ball on the x axis
+        if (Ball.x >= (canvas.width-Ball.rad)) {
+            Ball.horizontal = "decrease";
+        } else if (Ball.y >= player1.y && Ball.y <= player1.y + player1.height && Ball.x <= (player1.x + player1.width) + Ball.rad && Ball.horizontal != "increase") {
+            Ball.horizontal = "increase";
+        } else if (Ball.x <= (0+Ball.rad)) {
+            Ball.horizontal = "increase";
+        }
+    
+        // Choose the direction of the ball on the y axis
+        if (Ball.y >= (canvas.height-Ball.rad)) {
+            Ball.vertical = "decrease";
+            Ball.speedY = Math.round(Math.random()*(13-2)+2);
+        } else if (Ball.y <= (0+Ball.rad)) {
+            Ball.vertical = "increase";
+            Ball.speedY = Math.round(Math.random()*(13-2)+2);
+        }
+    
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawLine(20);
+        player1.draw();
+        player2.draw();
+        
+        // Move the ball on the x axis
+        if (Ball.horizontal == "increase") {
+            Ball.x += Ball.speedX;
+        } else if (Ball.horizontal == "decrease") {
+            Ball.x -= Ball.speedX;
+        }
+    
+        // Move the ball on the y axis
+        if (Ball.vertical == "increase") {
+            Ball.y += Ball.speedY;
+        } else if (Ball.vertical == "decrease") {
+            Ball.y -= Ball.speedY;
+        }
+    
+        Ball.draw();
+        window.requestAnimationFrame(Ball.move);
     }
 }
 
-const player1 = new Player("player1");
-const player2 = new Player("player2");
-const ball = new Ball();
+function drawLine(width) {
+    ctx.rect((canvas.width/2)-(width/2), 0, width, canvas.height);
+    ctx.fill();
+}
 
-document.addEventListener('keydown', function (e) {
-    player1.move(e.keyCode);
+canvas.addEventListener('mousemove', e => {
+    player1.move(e);
 });
 
-/* Moving the ball */
-var dirLeft = "up";
-var dirTop = "down";
-var animId = null;
-
-function move() {
-
-    // Move the ball in the good direction on the y axis
-    if (ball.left > 1365 && ball.left < 1373) {
-        dirLeft = "down";
-        player1.score++;
-        document.getElementById("scoreP1").textContent = player1.score;
-    } else if (ball.left == 0) {
-        dirLeft = "up";
-        player2.score++;
-        document.getElementById("scoreP2").textContent = player2.score;
-    } else if (ball.left > 25 && ball.left < 48 && ball.top >= (player1.top - 40) && ball.top <= (player1.top + 200)) {
-        dirLeft = "up";
-    }
-    
-    if (dirLeft == "up") {
-        ball.left += 10;
-    } else if (dirLeft == "down") {
-        ball.left -= 10;
-    }
-
-    // Move the ball in the good direction on the x axis
-    if (ball.top > 665 && ball.top < 673) {
-        dirTop = "up";
-    } else if (ball.top == 0) {
-        dirTop = "down";
-    }
-
-    if (dirTop == "up") {
-        ball.top -= 10;
-    } else if (dirTop == "down") {
-        ball.top += 10;
-    }
-
-    ball.ball.style.left = ball.left + "px";
-    ball.ball.style.top = ball.top + "px";
-    animId = requestAnimationFrame(move);
-}
-
-// Start the animation
-animId = requestAnimationFrame(move);
+drawLine(20);
+player1.draw();
+player2.draw();
+window.requestAnimationFrame(Ball.move);
