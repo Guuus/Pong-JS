@@ -8,8 +8,8 @@ class Player {
     constructor(x,y) {
         this.x = x;
         this.y = y;
-        this.width = 40;
-        this.height = 250;
+        this.width = 20;
+        this.height = 200;
     }
 
     draw() {
@@ -17,26 +17,25 @@ class Player {
         ctx.fill();
     }
 
-    move(e) {
-        let mouseY = e.clientY - canvasPos.top;
-        if (mouseY < player1.height/2) {
-            player1.y = 0;
-        } else if (mouseY > canvas.height-player1.height/2) {
-            player1.y = canvas.height-player1.height;
+    move(targetY) {
+        if (targetY < this.height/2) {
+            this.y = 0;
+        } else if (targetY > canvas.height-this.height/2) {
+            this.y = canvas.height-this.height;
         } else {
-            player1.y = mouseY - player1.height/2;
+            this.y = targetY - this.height/2;
         }
     }
 }
 
-const player1 = new Player(30,canvas.height/2-250/2);
-const player2 = new Player(canvas.width-70,canvas.height/2-250/2);
+const player1 = new Player(15,canvas.height/2-250/2);
+const player2 = new Player(canvas.width-35,canvas.height/2-250/2);
 
 // Init the Ball
 var Ball = {
     x: 50,
     y: 50,
-    rad: 25,
+    rad: 15,
     horizontal: "increase",
     vertical: "increase",
     speedX: 4,
@@ -49,9 +48,12 @@ var Ball = {
         ctx.fill();
     },
 
+    // TODO: refactor this function
     move: function() {
         // Choose the direction of the ball on the x axis
         if (Ball.x >= (canvas.width-Ball.rad)) {
+            Ball.horizontal = "decrease";
+        } else if (Ball.y >= player2.y && Ball.y <= player2.y + player2.height && Ball.x >= player2.x - Ball.rad && Ball.horizontal != "decrease") {
             Ball.horizontal = "decrease";
         } else if (Ball.y >= player1.y && Ball.y <= player1.y + player1.height && Ball.x <= (player1.x + player1.width) + Ball.rad && Ball.horizontal != "increase") {
             Ball.horizontal = "increase";
@@ -70,9 +72,10 @@ var Ball = {
     
         // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawLine(20);
+        drawLine(10);
         player1.draw();
         player2.draw();
+        player2.move(Ball.y);
         
         // Move the ball on the x axis
         if (Ball.horizontal == "increase") {
@@ -99,10 +102,11 @@ function drawLine(width) {
 }
 
 canvas.addEventListener('mousemove', e => {
-    player1.move(e);
+    let mouseY = e.clientY - canvasPos.top;
+    player1.move(mouseY);
 });
 
-drawLine(20);
+drawLine(10);
 player1.draw();
 player2.draw();
 window.requestAnimationFrame(Ball.move);
