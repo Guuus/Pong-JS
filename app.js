@@ -28,46 +28,43 @@ class Player {
     }
 }
 
-const player1 = new Player(15,canvas.height/2-250/2);
-const player2 = new Player(canvas.width-35,canvas.height/2-250/2);
-
 // Init the Ball
-var Ball = {
-    x: 50,
-    y: 50,
-    rad: 15,
-    horizontal: "increase",
-    vertical: "increase",
-    speedX: 4,
-    speedY: 4,
+class Ball {
+    constructor() {
+        this.rad = 15;
+        this.x = 50;
+        this.y = 50;
+        this.dirX = 1;
+        this.dirY = 1;
+        this.speedX = 4;
+        this.speedY = 4;
+        window.requestAnimationFrame(()=>this.move);
+    }
 
-    draw: function() {
+    draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.rad, 0, 2*Math.PI);
         ctx.closePath();
         ctx.fill();
-    },
+    }
 
-    // TODO: refactor this function
-    move: function() {
+    get move() {
         // Choose the direction of the ball on the x axis
-        if (Ball.x >= (canvas.width-Ball.rad)) {
-            Ball.horizontal = "decrease";
-        } else if (Ball.y >= player2.y && Ball.y <= player2.y + player2.height && Ball.x >= player2.x - Ball.rad && Ball.horizontal != "decrease") {
-            Ball.horizontal = "decrease";
-        } else if (Ball.y >= player1.y && Ball.y <= player1.y + player1.height && Ball.x <= (player1.x + player1.width) + Ball.rad && Ball.horizontal != "increase") {
-            Ball.horizontal = "increase";
-        } else if (Ball.x <= (0+Ball.rad)) {
-            Ball.horizontal = "increase";
+        if (this.x >= (canvas.width-this.rad)) {
+            this.dirX = -1;
+        } else if (this.y >= player2.y && this.y <= player2.y + player2.height && this.x >= player2.x - this.rad && this.dirX != -1) {
+            this.dirX = -1;
+        } else if (this.y >= player1.y && this.y <= player1.y + player1.height && this.x <= (player1.x + player1.width) + this.rad && this.dirX != 1) {
+            this.dirX = 1;
+        } else if (this.x <= (0+this.rad)) {
+            this.dirX = 1;
         }
-    
+
         // Choose the direction of the ball on the y axis
-        if (Ball.y >= (canvas.height-Ball.rad)) {
-            Ball.vertical = "decrease";
-            Ball.speedY = Math.round(Math.random()*(13-2)+2);
-        } else if (Ball.y <= (0+Ball.rad)) {
-            Ball.vertical = "increase";
-            Ball.speedY = Math.round(Math.random()*(13-2)+2);
+        if (this.y >= (canvas.height-this.rad)) {
+            this.dirY = -1;
+        } else if (this.y <= (0+this.rad)) {
+            this.dirY = 1;
         }
     
         // Clear the canvas
@@ -75,26 +72,31 @@ var Ball = {
         drawLine(10);
         player1.draw();
         player2.draw();
-        player2.move(Ball.y);
+        player2.move(this.y);
         
         // Move the ball on the x axis
-        if (Ball.horizontal == "increase") {
-            Ball.x += Ball.speedX;
-        } else if (Ball.horizontal == "decrease") {
-            Ball.x -= Ball.speedX;
+        if (this.dirX == 1) {
+            this.x += this.speedX;
+        } else if (this.dirX == -1) {
+            this.x -= this.speedX;
         }
     
         // Move the ball on the y axis
-        if (Ball.vertical == "increase") {
-            Ball.y += Ball.speedY;
-        } else if (Ball.vertical == "decrease") {
-            Ball.y -= Ball.speedY;
+        if (this.dirY == 1) {
+            this.y += this.speedY;
+        } else if (this.dirY == -1) {
+            this.y -= this.speedY;
         }
     
-        Ball.draw();
-        window.requestAnimationFrame(Ball.move);
+        this.draw();
+        window.requestAnimationFrame(()=>this.move);
     }
 }
+
+// Create 2 players and 1 ball
+const player1 = new Player(15,canvas.height/2-250/2);
+const player2 = new Player(canvas.width-35,canvas.height/2-250/2);
+const ball = new Ball();
 
 function drawLine(width) {
     ctx.rect((canvas.width/2)-(width/2), 0, width, canvas.height);
@@ -109,4 +111,3 @@ canvas.addEventListener('mousemove', e => {
 drawLine(10);
 player1.draw();
 player2.draw();
-window.requestAnimationFrame(Ball.move);
