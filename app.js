@@ -10,6 +10,7 @@ class Player {
         this.y = y;
         this.width = 20;
         this.height = 200;
+        this.score = 0;
     }
 
     draw() {
@@ -52,12 +53,14 @@ class Ball {
         // Choose the direction of the ball on the x axis
         if (this.x >= (canvas.width-this.rad)) {
             this.dirX = -1;
+            player1.score += 1;
         } else if (this.y >= player2.y && this.y <= player2.y + player2.height && this.x >= player2.x - this.rad && this.dirX != -1) {
             this.dirX = -1;
         } else if (this.y >= player1.y && this.y <= player1.y + player1.height && this.x <= (player1.x + player1.width) + this.rad && this.dirX != 1) {
             this.dirX = 1;
         } else if (this.x <= (0+this.rad)) {
             this.dirX = 1;
+            player2.score += 1;
         }
 
         // Choose the direction of the ball on the y axis
@@ -70,6 +73,8 @@ class Ball {
         // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawLine(10);
+        drawScore(player1.score, "left");
+        drawScore(player2.score, "right");
         player1.draw();
         player2.draw();
         player2.move(this.y);
@@ -103,11 +108,24 @@ function drawLine(width) {
     ctx.fill();
 }
 
+function drawScore(score, side) {
+    ctx.font = "55px Roboto";
+    if (side == "left" && score < 10) {
+        ctx.fillText(score, 575, 65);
+    } else if (side == "right") {
+        ctx.fillText(score, 645, 65);
+    } else if (side == "left" && score >= 10) {
+        ctx.fillText(score, 540, 65);
+    }
+}
+
 canvas.addEventListener('mousemove', e => {
     let mouseY = e.clientY - canvasPos.top;
     player1.move(mouseY);
 });
 
 drawLine(10);
+drawScore(4, "left");
+drawScore(1, "right");
 player1.draw();
 player2.draw();
