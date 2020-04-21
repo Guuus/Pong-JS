@@ -3,6 +3,38 @@ var canvasPos = canvas.getBoundingClientRect();
 var ctx = canvas.getContext('2d');
 ctx.fillStyle = "#fff";
 
+class Game {
+    constructor() {
+        this.player1 = new Player(15,canvas.height/2-250/2);
+        this.player2 = new Player(canvas.width-35,canvas.height/2-250/2);
+        this.ball = new Ball();
+    }
+
+    drawLine(width) {
+        ctx.rect((canvas.width/2)-(width/2), 0, width, canvas.height);
+        ctx.fill();
+    }
+    
+    drawScore(score, side) {
+        ctx.font = "55px Roboto";
+        if (side == "left" && score < 10) {
+            ctx.fillText(score, 575, 65);
+        } else if (side == "right") {
+            ctx.fillText(score, 645, 65);
+        } else if (side == "left" && score >= 10) {
+            ctx.fillText(score, 540, 65);
+        }
+    }
+
+    get init() {
+        this.drawLine(10);
+        this.drawScore(this.player1.score, "left");
+        this.drawScore(this.player2.score, "right");
+        this.player1.draw();
+        this.player2.draw();
+    }
+}
+
 // Init the Player
 class Player {
     constructor(x,y) {
@@ -50,6 +82,9 @@ class Ball {
     }
 
     get move() {
+        let player1 = game.player1;
+        let player2 = game.player2;
+
         // Choose the direction of the ball on the x axis
         if (this.x >= (canvas.width-this.rad)) {
             this.dirX = -1;
@@ -72,11 +107,8 @@ class Ball {
     
         // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawLine(10);
-        drawScore(player1.score, "left");
-        drawScore(player2.score, "right");
-        player1.draw();
-        player2.draw();
+        game.init;
+
         player2.move(this.y);
         
         // Move the ball on the x axis
@@ -98,34 +130,11 @@ class Ball {
     }
 }
 
-// Create 2 players and 1 ball
-const player1 = new Player(15,canvas.height/2-250/2);
-const player2 = new Player(canvas.width-35,canvas.height/2-250/2);
-const ball = new Ball();
+const game = new Game();
 
-function drawLine(width) {
-    ctx.rect((canvas.width/2)-(width/2), 0, width, canvas.height);
-    ctx.fill();
-}
-
-function drawScore(score, side) {
-    ctx.font = "55px Roboto";
-    if (side == "left" && score < 10) {
-        ctx.fillText(score, 575, 65);
-    } else if (side == "right") {
-        ctx.fillText(score, 645, 65);
-    } else if (side == "left" && score >= 10) {
-        ctx.fillText(score, 540, 65);
-    }
-}
+game.init;
 
 canvas.addEventListener('mousemove', e => {
     let mouseY = e.clientY - canvasPos.top;
-    player1.move(mouseY);
+    game.player1.move(mouseY);
 });
-
-drawLine(10);
-drawScore(4, "left");
-drawScore(1, "right");
-player1.draw();
-player2.draw();
